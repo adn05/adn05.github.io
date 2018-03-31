@@ -32,7 +32,7 @@
 .blog-left-area .blog-description p {
   font-size: 13px;
   margin: 15px 0px;
-  color: #164E71;
+  color: #E65100;
 }
 
 .blog-left-area .blog-description p i {
@@ -73,19 +73,19 @@
   width: 33px;
   height: 33px;
   background-color: #fff;
-  border: 1px solid #164E71;
+  border: 1px solid #E65100;
   margin: 0px 4px;
   transition: all 0.5s;
 }
 
 .blog-left-area .blog-share a i {
-  color: #164E71;
+  color: #E65100;
   text-align: center;
   transition: all 0.5s;
 }
 
 .blog-left-area .blog-share a:hover {
-  background: #164E71;
+  background: #E65100;
 }
 
 .blog-left-area .blog-share a:hover i {
@@ -93,7 +93,7 @@
 }
 
 .blog-left-area .blog-share a i {
-  color: #164E71;
+  color: #E65100;
   text-align: center;
   display: block;
   line-height: 33px;
@@ -157,7 +157,7 @@
   position: absolute;
   right: 0px;
   top: 0px;
-  background: #164E71;
+  background: #E65100;
   border: 0px;
   width: 45px;
   height: 40px;
@@ -191,7 +191,7 @@
 }
 
 .blog-right-area .recent-post-list li a:hover {
-  color: #164E71;
+  color: #E65100;
 }
 
 .blog-right-area .category-list li {

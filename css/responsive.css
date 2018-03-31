@@ -30,7 +30,7 @@
   }
   .slicknav_btn {
     margin-top: 20px;
-    border: 1px solid #164E71;
+    border: 1px solid #E65100;
     background: #fff;
     margin-right: 20px;
   }
@@ -46,7 +46,7 @@
   .slicknav_nav a:hover {
     border-radius: 0px;
     background: #fff;
-    color: #164E71;
+    color: #E65100;
   }
   .slicknav_nav,
   .slicknav_nav ul {
@@ -59,7 +59,7 @@
     margin: 0px;
   }
   .slicknav_menu .slicknav_icon-bar {
-    background-color: #164E71;
+    background-color: #E65100;
   }
   header {
     background-color: #fff;

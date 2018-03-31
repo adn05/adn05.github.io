@@ -78,7 +78,7 @@ h6 {
   color: #fff;
   display: inline-block;
   transition: all 0.5s;
-  background-color: #164E71;
+  background-color: #E65100;
   font-weight: 500;
 }
 
@@ -98,22 +98,22 @@ h6 {
 
 .btn-style2:hover,.btn-style2:focus {
   background-color: #fff;
-  color: #164E71;
+  color: #E65100;
   border-color: transparent;
 }
 
 .btn-style3 {
   padding: 10px 22px;
   background-color: #fff;
-  color: #164E71;
+  color: #E65100;
   display: inline-block;
   transition: all 0.5s;
   font-weight: 500;
-  border: 1px solid #164E71;
+  border: 1px solid #E65100;
 }
 
 .btn-style3:hover,.btn-style3:focus  {
-  background-color: #164E71;
+  background-color: #E65100;
   color: #fff;
   border-color: transparent;
 }
@@ -148,11 +148,11 @@ a:focus {
 }
 
 .primary {
-  color: #164E71;
+  color: #E65100;
 }
 
 .primary-bg {
-  background-color: #164E71;
+  background-color: #E65100;
 }
 
 .padding-style1 {
