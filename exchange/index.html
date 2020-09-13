@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Voler Admin Dashboard</title>
+
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="shortcut icon" href="assets/favicon.svg" type="image/x-icon">
+</head>
+
+<body>
+    <div id="app">
+        <div id="sidebar"></div>
+        <div id="main">
+
+            <div class="main-content container-fluid">
+                <div class="page-title">
+                    <h3>Exchange BTC/CFA</h3>
+                    <p class="text-subtitle text-muted">Estimer l'achat ou la vente de vos BTC en CFA</p>
+                </div>
+                <section class="section">
+                    <div class="row mb-4">
+                        <div class="offset-md-2 col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class='card-heading p-1 pl-3'>
+                                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Acheter</a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Vendre</a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">A propos</a>
+                                            </li>
+                                        </ul>
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <form id="btccfa" method="post" novalidate>
+                                        <div class="row">
+                                            <div class="tab-content" id="myTabContent">
+                                                <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                                    <div class="row">
+                                                        <div class="col-sm-6 form-group">
+                                                            <label for="invalid-state">Montant BTC à acheter</label>
+                                                            <input type="number" class="form-control" id="buy-btc" name="buy-btc" autofocus value="0.01">
+                                                            <div class="invalid-feedback">
+                                                                <i class="bx bx-radio-circle"></i>
+                                                                <p class="message"></p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6 form-group">
+                                                            <label for="invalid-state">Montant CFA à dépenser</label>
+                                                            <input type="number" class="form-control" id="buy-cfa" name="buy-cfa">
+                                                            <div class="invalid-feedback">
+                                                                <i class="bx bx-radio-circle"></i>
+                                                                <p class="message"></p>
+                                                            </div>
+                                                        </div>
+                                                        <!--div class="col-sm-6 mb-1">
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)">
+                                                                <span class="input-group-text">$</span>
+                                                                <span class="input-group-text">0.00</span>
+                                                            </div>
+                                                        </div-->
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                                    <div class="row">
+                                                        <div class="col-sm-6 form-group">
+                                                            <label for="invalid-state">Montant BTC à vendre</label>
+                                                            <input type="number" class="form-control" id="sell-btc" name="sell-btc" value="0.01">
+                                                            <div class="invalid-feedback">
+                                                                <i class="bx bx-radio-circle"></i>
+                                                                <p class="message"></p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6 form-group">
+                                                            <label for="invalid-state">Montant CFA à recevoir</label>
+                                                            <input type="number" class="form-control" id="sell-cfa" name="sell-cfa">
+                                                            <div class="invalid-feedback">
+                                                                <i class="bx bx-radio-circle"></i>
+                                                                <p class="message"></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                                                    <p class="mt-2">Service entre particuliers pour faciliter l'accès aux crypto-monnaies. Faites vos échanges par Mobile Money et disposez de vos fonds dans l'heure et à un taux ami.
+                                                    </p>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <footer>
+                <div class="footer clearfix mb-0 text-muted">
+                    <div class="float-left">
+                        <p>&copy; 2020</p>
+                    </div>
+                    <div class="float-right">
+                        <p>Offered by <a href="#">adn05</a></p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/validate.min.js"></script>
+    <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
