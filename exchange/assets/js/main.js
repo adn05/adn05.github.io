@@ -60,14 +60,16 @@ var sell_btc_input = document.getElementById("sell-btc");
 var sell_cfa_input = document.getElementById("sell-cfa");
 
 function calcule(input) {
-    var amount = input.value;
+    var amount = parseFloat(input.value);
     var cfa = 0;
     var btc = 0;
+    // console.log(prix_btc_eur);
     // fcfa = ((prix_BTC_EUR + 100) * amount_btc + 6 ) * 700 * 1.02
     // btc = ((amount_cfa / 1.02) / 700 - 6) / (prix_BTC_EUR + 100)
     if (input.name == "buy-btc") {
         cfa = ((prix_btc_eur + 100) * amount + 6) * taux_eur_buy * 1.02;
         buy_cfa_input.value = Math.round(cfa / 100) * 100;
+        // console.log(cfa);
     }
     if (input.name == "buy-cfa") {
         btc = ((amount / 1.02) / taux_eur_buy - 6) / (prix_btc_eur + 100);
@@ -93,7 +95,7 @@ async function get_btc_price() {
     var lastPrice = await response.json(); //extract JSON from the http response
 
     console.log(lastPrice);
-    prix_btc_eur = lastPrice.lprice;
+    prix_btc_eur = parseFloat(lastPrice.lprice);
 
     // Calcul default value
     calcule(buy_btc_input);
