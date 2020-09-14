@@ -50,14 +50,23 @@ var constraints = {
     }
 };
 
-var prix_btc_eur = 0;
-var taux_eur_buy = 700;
-var taux_eur_sell = 495;
+var prix_btc_eur = 8755;
+var prix_btc_usd = 0;
+var prix_eur_cfa = 656;
+var prix_usd_cfa = 0;
+
+var taux_eur_buy = 685;
+var taux_eur_sell = 620;
+var com_buy = 0.080;
+var com_sell = 0.070;
 
 var buy_btc_input = document.getElementById("buy-btc");
 var buy_cfa_input = document.getElementById("buy-cfa");
 var sell_btc_input = document.getElementById("sell-btc");
 var sell_cfa_input = document.getElementById("sell-cfa");
+
+var usd_span = document.getElementById("btc-price");
+var cfa_span = document.getElementById("usd-price");
 
 function calcule(input) {
     var amount = parseFloat(input.value);
@@ -67,24 +76,26 @@ function calcule(input) {
     // fcfa = ((prix_BTC_EUR + 100) * amount_btc + 6 ) * 700 * 1.02
     // btc = ((amount_cfa / 1.02) / 700 - 6) / (prix_BTC_EUR + 100)
     if (input.name == "buy-btc") {
-        cfa = ((prix_btc_eur + 100) * amount + 6) * taux_eur_buy * 1.02;
+        // cfa1 = ((prix_btc_eur + 100) * amount + 6) * taux_eur_buy * 1.02;
+        cfa = (amount + 0.0006) * prix_btc_eur * prix_eur_cfa * (1 + com_buy);
         buy_cfa_input.value = Math.round(cfa / 100) * 100;
-        // console.log(cfa);
+        // console.log({"ancien": cfa1, "nouveau": cfa});
     }
     if (input.name == "buy-cfa") {
-        btc = ((amount / 1.02) / taux_eur_buy - 6) / (prix_btc_eur + 100);
+        btc = amount / (1 + com_buy) / prix_eur_cfa / prix_btc_eur - 0.0006;
         buy_btc_input.value = Math.round(btc * 100000000) / 100000000;
     }
 
     // fcfa = (prix_BTC_EUR - 100) * amount_btc * 595
     // btc = amount_cfa / 600 / (prix_BTC_EUR - 100)
     if (input.name == "sell-btc") {
-        cfa = (prix_btc_eur - 100) * amount * taux_eur_sell;
+        // cfa1 = (prix_btc_eur - 100) * amount * taux_eur_sell;
+        cfa = amount * prix_btc_eur * prix_eur_cfa * (1 - com_sell);
         sell_cfa_input.value = Math.floor(cfa / 100) * 100;
-        // console.log(cfa);
+        // console.log({"ancien": cfa1, "nouveau": cfa});
     }
     if (input.name == "sell-cfa") {
-        btc = amount / taux_eur_sell / (prix_btc_eur + 100);
+        btc = amount / prix_btc_eur / prix_eur_cfa / (1 - com_sell);
         sell_btc_input.value = Math.floor(btc * 100000000) / 100000000;
         // console.log(btc);
     }
@@ -94,12 +105,32 @@ async function get_btc_price() {
     var response = await fetch('https://cex.io/api/last_price/BTC/EUR');
     var lastPrice = await response.json(); //extract JSON from the http response
 
-    console.log(lastPrice);
     prix_btc_eur = parseFloat(lastPrice.lprice);
 
     // Calcul default value
     calcule(buy_btc_input);
     calcule(sell_btc_input);
+
+    response = await fetch('https://cex.io/api/last_price/BTC/USD');
+    lastPrice = await response.json();
+    prix_btc_usd = Math.round(parseFloat(lastPrice.lprice));
+    prix_usd_cfa = prix_eur_cfa * prix_btc_eur / prix_btc_usd;
+    prix_usd_cfa = Math.round(prix_usd_cfa);
+
+    updatePrices(prix_btc_usd, prix_usd_cfa);
+
+    console.log({
+        "prix_btc_eur": prix_btc_eur,
+        "prix_btc_usd": prix_btc_usd,
+        "prix_usd_cfa": prix_usd_cfa
+    });
+}
+
+function updatePrices(usd, cfa) {
+    // update the prices
+    usd_span.innerText = usd;
+    cfa_span.innerText = cfa;
+
 }
 
 function handleFormSubmit(form, input) {
@@ -111,7 +142,6 @@ function handleFormSubmit(form, input) {
 
 // Updates the inputs with the validation errors
 function showErrors(form, errors) {
-    // list.forEach(item => console.log(item))
     // We loop through all the inputs and show the errors for that input
     (form.querySelectorAll("input[name], select[name]")).forEach(function(input) {
         // Since the errors can be null if no errors were found we need to handle
@@ -128,15 +158,10 @@ function showErrorsForInput(input, errors) {
     message = formGroup.querySelector(".message");
     // First we remove any old messages and resets the classes
     resetInput(input);
-    // resetFormGroup(formGroup);
     // If we have errors
     if (errors) {
         // we first mark the group has having errors
         input.classList.add("is-invalid");
-        // then we append all the errors
-        // _.each(errors, function(error) {
-        //     addError(messages, error);
-        // });
         message.innerText = errors[0];
     }
 }
@@ -162,14 +187,14 @@ function resetInput(input) {
     // get btc price
     get_btc_price();
 
-    // Update price every 10 minute
-    setInterval(get_btc_price, 600000);
+    // Update price every 5 minutes
+    setInterval(get_btc_price, 300000);
 
     // Hook up the form so we can prevent it from being posted
     var form = document.querySelector("form#btccfa");
     form.addEventListener("submit", function(ev) {
         ev.preventDefault();
-        handleFormSubmit(form);
+        // handleFormSubmit(form);
     });
 
     // Hook up the inputs to validate on the fly
@@ -177,10 +202,12 @@ function resetInput(input) {
     for (var i = 0; i < inputs.length; ++i) {
         inputs.item(i).addEventListener("input", function(ev) {
             var errors = validate(form, constraints) || {};
-            showErrorsForInput(this, errors[this.name]);
             if (!errors[this.name]) {
                 calcule(this);
             }
+            errors = validate(form, constraints) || {};
+            // showErrorsForInput(this, errors[this.name]);
+            showErrors(form, errors || {});
         });
     }
 })();
