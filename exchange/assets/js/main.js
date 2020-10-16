@@ -16,19 +16,19 @@ var constraints = {
             message: "can only contain a-z and 0-9"
         }
     },
-    "buy-btc": {
+    "give-amount": {
         presence: true,
         // Number of children has to be an integer >= 0
         numericality: {
-            greaterThanOrEqualTo: 0.002,
+            greaterThanOrEqualTo: 0,
             notGreaterThanOrEqualTo: "min amount 0.002 BTC"
         }
     },
-    "buy-cfa": {
+    "receive-amount": {
         presence: true,
         // Number of children has to be an integer >= 0
         numericality: {
-            greaterThanOrEqualTo: 10000,
+            greaterThanOrEqualTo: 0,
             notGreaterThanOrEqualTo: "min amount 10.000 CFA"
         }
     },
@@ -50,18 +50,28 @@ var constraints = {
     }
 };
 
+var p2pData = {};
+
 var prix_btc_eur = 8755;
 var prix_btc_usd = 0;
+var prix_btc_cfa = 0;
 var prix_eur_cfa = 656;
 var prix_usd_cfa = 0;
+var prix_btc_pm_usd = 0;
+var prix_btc_pm_eur = 0;
 
-var taux_eur_buy = 685;
-var taux_eur_sell = 620;
 var com_buy = 0.080;
 var com_sell = 0.070;
+var frais_tr_btc = 0.0006;
 
-var buy_btc_input = document.getElementById("buy-btc");
-var buy_cfa_input = document.getElementById("buy-cfa");
+var give_input = document.getElementById("give-amount");
+var receive_input = document.getElementById("receive-amount");
+var give_drop = document.getElementById("give-curr");
+var receive_drop = document.getElementById("receive-curr");
+
+var give_select = { "value": "mtn-cfa" };
+var receive_select = { "value": "btc" };
+
 var sell_btc_input = document.getElementById("sell-btc");
 var sell_cfa_input = document.getElementById("sell-cfa");
 
@@ -71,33 +81,88 @@ var cfa_span = document.getElementById("usd-price");
 function calcule(input) {
     var amount = parseFloat(input.value);
     var cfa = 0;
+    var receive = 'none';
+    var give = 'none';
     var btc = 0;
     // console.log(prix_btc_eur);
     // fcfa = ((prix_BTC_EUR + 100) * amount_btc + 6 ) * 700 * 1.02
     // btc = ((amount_cfa / 1.02) / 700 - 6) / (prix_BTC_EUR + 100)
-    if (input.name == "buy-btc") {
-        // cfa1 = ((prix_btc_eur + 100) * amount + 6) * taux_eur_buy * 1.02;
-        cfa = (amount + 0.0006) * prix_btc_eur * prix_eur_cfa * (1 + com_buy);
-        buy_cfa_input.value = Math.round(cfa / 100) * 100;
-        // console.log({"ancien": cfa1, "nouveau": cfa});
-    }
-    if (input.name == "buy-cfa") {
-        btc = amount / (1 + com_buy) / prix_eur_cfa / prix_btc_eur - 0.0006;
-        buy_btc_input.value = Math.round(btc * 100000000) / 100000000;
+    if (input.name == "give-amount") {
+        if (give_select.value == "btc" && receive_select.value == "mtn-cfa") {
+            receive = amount * prix_btc_cfa * (1 - com_sell);
+            receive = Math.floor(receive / 100) * 100;
+            // console.log({"ancien": cfa1, "nouveau": cfa});
+        }
+        if (give_select.value == "mtn-cfa" && receive_select.value == "btc") {
+            receive = amount / (1 + com_buy) / prix_btc_cfa - frais_tr_btc;
+            receive = Math.floor(receive * 100000000) / 100000000;
+        }
+        if (give_select.value == "pm-usd" && receive_select.value == "mtn-cfa") {
+            receive = amount * prix_usd_cfa * (1 - com_sell);
+            receive = Math.floor(receive / 100) * 100;
+        }
+        if (give_select.value == "mtn-cfa" && receive_select.value == "pm-usd") {
+            receive = (amount / (1 + com_buy) / prix_btc_cfa - frais_tr_btc) * prix_btc_pm_usd;
+            receive = Math.floor(receive * 100) / 100;
+        }
+        if (give_select.value == "pm-eur" && receive_select.value == "mtn-cfa") {
+            receive = amount * prix_eur_cfa * (1 - com_sell);
+            receive = Math.floor(receive / 100) * 100;
+        }
+        if (give_select.value == "mtn-cfa" && receive_select.value == "pm-eur") {
+            receive = (amount / (1 + com_buy) / prix_btc_cfa - frais_tr_btc) * prix_btc_pm_eur;
+            receive = Math.floor(receive * 100) / 100;
+        }
+        if (give_select.value == "pa-usd" && receive_select.value == "mtn-cfa") {
+            receive = amount * prix_usd_cfa * (1 - com_sell);
+            receive = Math.floor(receive / 100) * 100;
+        }
+        if (give_select.value == "mtn-cfa" && receive_select.value == "pa-usd") {
+            // receive = amount / prix_usd_cfa / (1 + com_buy);
+            receive = (amount / (1 + com_buy) / prix_btc_cfa - frais_tr_btc) * prix_btc_usd;
+            receive = Math.floor(receive * 100) / 100;
+        }
+
+        receive_input.value = receive
     }
 
-    // fcfa = (prix_BTC_EUR - 100) * amount_btc * 595
-    // btc = amount_cfa / 600 / (prix_BTC_EUR - 100)
-    if (input.name == "sell-btc") {
-        // cfa1 = (prix_btc_eur - 100) * amount * taux_eur_sell;
-        cfa = amount * prix_btc_eur * prix_eur_cfa * (1 - com_sell);
-        sell_cfa_input.value = Math.floor(cfa / 100) * 100;
-        // console.log({"ancien": cfa1, "nouveau": cfa});
-    }
-    if (input.name == "sell-cfa") {
-        btc = amount / prix_btc_eur / prix_eur_cfa / (1 - com_sell);
-        sell_btc_input.value = Math.floor(btc * 100000000) / 100000000;
-        // console.log(btc);
+    // Reverse
+    if (input.name == "receive-amount") {
+        if (give_select.value == "btc" && receive_select.value == "mtn-cfa") {
+            give = amount / prix_btc_cfa / (1 - com_sell);
+            give = Math.round(give * 100000000) / 100000000;
+        }
+        if (give_select.value == "mtn-cfa" && receive_select.value == "btc") {
+            give = (amount + frais_tr_btc) * prix_btc_cfa * (1 + com_buy);
+            give = Math.round(give / 100) * 100;
+        }
+        if (give_select.value == "pm-usd" && receive_select.value == "mtn-cfa") {
+            give = amount / prix_usd_cfa / (1 - com_sell);
+            give = Math.round(give * 100) / 100;
+        }
+        if (give_select.value == "mtn-cfa" && receive_select.value == "pm-usd") {
+            give = (amount / prix_btc_pm_usd + frais_tr_btc) * prix_btc_cfa * (1 + com_buy);
+            give = Math.round(give / 100) * 100;
+        }
+        if (give_select.value == "pm-eur" && receive_select.value == "mtn-cfa") {
+            give = amount / prix_eur_cfa / (1 - com_sell);
+            give = Math.round(give * 100) / 100;
+        }
+        if (give_select.value == "mtn-cfa" && receive_select.value == "pm-eur") {
+            give = (amount / prix_btc_pm_eur + frais_tr_btc) * prix_btc_cfa * (1 + com_buy);
+            give = Math.round(give / 100) * 100;
+        }
+        if (give_select.value == "pa-usd" && receive_select.value == "mtn-cfa") {
+            give = amount / prix_usd_cfa / (1 - com_sell);
+            give = Math.round(give * 100) / 100;
+        }
+        if (give_select.value == "mtn-cfa" && receive_select.value == "pa-usd") {
+            // give = amount * prix_usd_cfa * (1 + com_buy);
+            give = (amount / prix_btc_usd + frais_tr_btc) * prix_btc_cfa * (1 + com_buy);
+            give = Math.round(give / 100) * 100;
+        }
+
+        give_input.value = give
     }
 }
 
@@ -106,15 +171,15 @@ async function get_btc_price() {
     var lastPrice = await response.json(); //extract JSON from the http response
 
     prix_btc_eur = parseFloat(lastPrice.lprice);
+    prix_btc_cfa = prix_btc_eur * prix_eur_cfa;
 
     // Calcul default value
-    calcule(buy_btc_input);
-    calcule(sell_btc_input);
+    calcule(give_input);
 
     response = await fetch('https://cex.io/api/last_price/BTC/USD');
     lastPrice = await response.json();
     prix_btc_usd = Math.round(parseFloat(lastPrice.lprice));
-    prix_usd_cfa = prix_eur_cfa * prix_btc_eur / prix_btc_usd;
+    prix_usd_cfa = prix_btc_cfa / prix_btc_usd;
     prix_usd_cfa = Math.round(prix_usd_cfa);
 
     updatePrices(prix_btc_usd, prix_usd_cfa);
@@ -122,6 +187,7 @@ async function get_btc_price() {
     console.log({
         "prix_btc_eur": prix_btc_eur,
         "prix_btc_usd": prix_btc_usd,
+        "prix_btc_cfa": prix_btc_cfa,
         "prix_usd_cfa": prix_usd_cfa
     });
 }
@@ -130,7 +196,6 @@ function updatePrices(usd, cfa) {
     // update the prices
     usd_span.innerText = usd;
     cfa_span.innerText = cfa;
-
 }
 
 function handleFormSubmit(form, input) {
@@ -157,10 +222,13 @@ function showErrorsForInput(input, errors) {
     // Find where the error messages will be insert into
     message = formGroup.querySelector(".message");
     // First we remove any old messages and resets the classes
-    resetInput(input);
+    // formGroup.classList.remove("is-invalid");
+    input.classList.remove("is-invalid");
+    console.log(errors);
     // If we have errors
     if (errors) {
         // we first mark the group has having errors
+        formGroup.classList.add("is-invalid");
         input.classList.add("is-invalid");
         message.innerText = errors[0];
     }
@@ -178,16 +246,52 @@ function closestParent(child, className) {
     }
 }
 
-function resetInput(input) {
-    // Remove the success and error classes
-    input.classList.remove("is-invalid");
+function update_p2p_ticker() {
+    $.ajax({
+        type: "GET",
+        url: 'https://p2pchange.is/ticker.php',
+        // data: {email: $("#field_email").val()},
+        success: function(responseajax) {
+            var response = responseajax;
+            if (response.status == true) {
+                p2pData = response;
+                // console.log(p2pData);
+
+                prix_btc_pm_usd = parseFloat(p2pData.BTC.exchangerate.PMU);
+                prix_btc_pm_eur = parseFloat(p2pData.BTC.exchangerate.PME);
+
+                console.log({
+                    "prix_btc_pm_eur": prix_btc_pm_eur,
+                    "prix_btc_pm_usd": prix_btc_pm_usd
+                });
+            }
+        }
+    });
 }
+
+function on_receive_curr(curr) {
+    // console.log(curr);
+    receive_select = { "value": curr[0] };
+    receive_drop.innerText = curr[1];
+
+    calcule(give_input);
+}
+
+function on_give_curr(curr) {
+    give_select = { "value": curr[0] };
+    give_drop.innerText = curr[1];
+
+    calcule(receive_input);
+}
+
 
 (function() {
     // get btc price
+    update_p2p_ticker();
     get_btc_price();
 
     // Update price every 5 minutes
+    setInterval(update_p2p_ticker, 300000);
     setInterval(get_btc_price, 300000);
 
     // Hook up the form so we can prevent it from being posted

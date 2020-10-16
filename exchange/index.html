@@ -4,10 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exchange BTC/CFA</title>
+    <title>Exchange Crypto/CFA</title>
 
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="stylesheet" href="assets/css/main.css">
     <link rel="shortcut icon" href="assets/favicon.svg" type="image/x-icon">
 </head>
 
@@ -18,8 +19,9 @@
 
             <div class="main-content container-fluid">
                 <div class="page-title">
-                    <h3>Exchange BTC/CFA</h3>
-                    <p class="text-subtitle text-muted">Estimer l'achat ou la vente de vos <code>BTC</code> en francs <code>CFA</code></p>
+                    <h3>Exchange Crypto/CFA</h3>
+                    <p class="text-subtitle text-muted">Estimer l'achat ou la vente de vos devises numeriques en francs
+                        <code>CFA</code></p>
                 </div>
                 <section class="section">
                     <div class="row mb-4">
@@ -29,10 +31,7 @@
                                     <h4 class='card-heading p-1 pl-3'>
                                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                                             <li class="nav-item" role="presentation">
-                                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Acheter</a>
-                                            </li>
-                                            <li class="nav-item" role="presentation">
-                                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Vendre</a>
+                                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Convertir</a>
                                             </li>
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">A propos</a>
@@ -47,7 +46,8 @@
                                                 <div class="">
                                                     <p class="text-xl">Prix du marché :
                                                         <a href="https://cex.io/btc-usd" target="_blank" class="badge bg-warning font-weight-bold ">1 BTC = <span id="btc-price"></span> USD</a>
-                                                        <span class="badge bg-primary font-weight-bold ">1 USD = <span id="usd-price"></span> CFA</span>
+                                                        <span class="badge bg-primary font-weight-bold ">1 USD = <span id="usd-price"></span> CFA
+                                                        </span>
                                                     </p>
                                                 </div>
                                                 <br>
@@ -56,43 +56,50 @@
                                                 <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
                                                     <div class="row">
                                                         <div class="col-sm-6 form-group">
-                                                            <label for="invalid-state">Montant BTC à acheter</label>
-                                                            <input type="number" class="form-control" id="buy-btc" name="buy-btc" step="0.0001" min="0" autofocus value="0.01">
-                                                            <div class="invalid-feedback">
-                                                                <i class="bx bx-radio-circle"></i>
-                                                                <p class="message"></p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-6 form-group">
-                                                            <label for="invalid-state">Montant CFA à dépenser</label>
-                                                            <input type="number" class="form-control" id="buy-cfa" name="buy-cfa" step="100" min="100">
-                                                            <div class="invalid-feedback">
-                                                                <i class="bx bx-radio-circle"></i>
-                                                                <p class="message"></p>
-                                                            </div>
-                                                        </div>
-                                                        <!--div class="col-sm-6 mb-1">
+                                                            <label>Je donne</label>
                                                             <div class="input-group">
-                                                                <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)">
-                                                                <span class="input-group-text">$</span>
-                                                                <span class="input-group-text">0.00</span>
+                                                                <input type="number" class="form-control" id="give-amount" name="give-amount" min="0" autofocus value="50000">
+
+                                                                <button class="btn btn-secondary dropdown-toggle" id="give-curr" type="button" data-toggle="dropdown" aria-expanded="false">MTN MoMo</button>
+                                                                <ul class="dropdown-menu dropdown-menu-right">
+                                                                    <li><a class="dropdown-item" onclick="on_give_curr(['mtn-cfa', 'MTN MoMo'])">MTN
+                                      MoMo</a></li>
+                                                                    <li><a class="dropdown-item" onclick="on_give_curr(['btc', 'Bitcoin'])">Bitcoin</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item" onclick="on_give_curr(['pm-usd', 'Perfect USD'])">Perfect
+                                      USD</a></li>
+                                                                    <li><a class="dropdown-item" onclick="on_give_curr(['pa-usd', 'Payeer USD'])">Payeer
+                                      USD</a></li>
+                                                                    <li><a class="dropdown-item" onclick="on_give_curr(['pm-eur', 'Perfect EUR'])">Perfect
+                                      EUR</a></li>
+
+                                                                </ul>
+
                                                             </div>
-                                                        </div-->
-                                                    </div>
-                                                </div>
-                                                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                                    <div class="row">
-                                                        <div class="col-sm-6 form-group">
-                                                            <label for="invalid-state">Montant BTC à vendre</label>
-                                                            <input type="number" class="form-control" id="sell-btc" name="sell-btc" step="0.0001" min="0" value="0.01">
                                                             <div class="invalid-feedback">
                                                                 <i class="bx bx-radio-circle"></i>
                                                                 <p class="message"></p>
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-6 form-group">
-                                                            <label for="invalid-state">Montant CFA à recevoir</label>
-                                                            <input type="number" class="form-control" id="sell-cfa" name="sell-cfa" step="100" min="100">
+                                                            <label>Je reçois</label>
+                                                            <div class="input-group">
+                                                                <input type="number" class="form-control" id="receive-amount" name="receive-amount" min="0">
+                                                                <button class="btn btn-primary dropdown-toggle" id="receive-curr" type="button" data-toggle="dropdown" aria-expanded="false">Bitcoin</button>
+                                                                <ul class="dropdown-menu dropdown-menu-right">
+                                                                    <li><a class="dropdown-item" onclick="on_receive_curr(['btc', 'Bitcoin'])">Bitcoin</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item" onclick="on_receive_curr(['pm-usd', 'Perfect USD'])">Perfect
+                                      USD</a></li>
+                                                                    <li><a class="dropdown-item" onclick="on_receive_curr(['pa-usd', 'Payeer USD'])">Payeer
+                                      USD</a></li>
+                                                                    <li><a class="dropdown-item" onclick="on_receive_curr(['pm-eur', 'Perfect EUR'])">Perfect
+                                      EUR</a></li>
+                                                                    <li><a class="dropdown-item" onclick="on_receive_curr(['mtn-cfa', 'MTN MoMo'])">MTN
+                                      MoMo</a></li>
+                                                                </ul>
+
+                                                            </div>
                                                             <div class="invalid-feedback">
                                                                 <i class="bx bx-radio-circle"></i>
                                                                 <p class="message"></p>
@@ -103,17 +110,19 @@
                                                 <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                                                     <p class="mt-2">Service entre particuliers pour faciliter l'accès aux crypto-monnaies. Faites vos échanges par Mobile Money et disposez de vos fonds dans l'heure et à un taux ami.
                                                     </p>
-                                                    <div class="pl-3">
+                                                    <!-- <div class="pl-3">
                                                         <div class="legends">
                                                             <div class="w-3 h-3"></div><span class="text-xs">* commissions</span>
                                                             <div class="legend d-flex flex-row align-items-center">
-                                                                <div class="w-3 h-3 rounded-full bg-info mr-2"></div><span class="text-xs">Achat: 8% + 4000 CFA</span>
+                                                                <div class="w-3 h-3 rounded-full bg-info mr-2"></div><span class="text-xs">Achat: 8% +
+                                  4000 CFA</span>
                                                             </div>
                                                             <div class="legend d-flex flex-row align-items-center">
-                                                                <div class="w-3 h-3 rounded-full bg-blue mr-2"></div><span class="text-xs">Vente: 7% en CFA</span>
+                                                                <div class="w-3 h-3 rounded-full bg-blue mr-2"></div><span class="text-xs">Vente: 7% en
+                                  CFA</span>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> -->
 
                                                 </div>
                                             </div>
@@ -138,8 +147,9 @@
             </footer>
         </div>
     </div>
-    <script src="assets/js/app.js"></script>
+    <script src="assets/js/libs.js"></script>
     <script src="assets/js/validate.min.js"></script>
+    <script src="assets/js/app.js"></script>
     <script src="assets/js/main.js"></script>
 
 </body>
